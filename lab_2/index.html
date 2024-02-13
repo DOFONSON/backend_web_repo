@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pracrice</title>
+</head>
+<body>
+    <main>
+        <form action="https://httpbin.org/post" method="post">
+            <input type="hidden" name="method" value="delete">
+            <fieldset>
+                <legend>Имя</legend>
+                <label for="name"> Ваше имя <input type="text" name="name" id="name">
+            </fieldset>
+            
+            <fieldset>
+                <legend>Почта</legend>
+                <label for="email">Ваша почта <input type="email" id="email" name="email"></label>
+            </fieldset>
+
+            <fieldset>
+                <legend>Тип обращения</legend>
+                <label for="type">
+                    <input type="radio" name="complaint" id="complaint"><span>Жалоба</span>
+                    <input type="radio" name="suggestion" id="suggestion"><span>Предложение</span>
+                    <input type="radio" name="thanks" id="thanks"><span>Благодарность</span>
+                </label>
+            </fieldset>
+
+            <fieldset>
+                <legend>Обращение</legend>
+                <label for="appeal">
+                    Текст обращения
+                    <textarea name="" id="appeal" cols="30" rows="10"></textarea>
+                </label>
+            </fieldset>
+
+            <fieldset>
+                <legend>Вариант ответа</legend>
+                <label for="SMS">
+                    <input type="checkbox" name='SMS' id="SMS"><span>SMS</span>
+                </label>
+                <label for="mail">
+                    <input type="checkbox" name="email" id="mail"><span>e-mail</span>
+                </label>
+            </fieldset>
+
+            <button type="submit">Отправить</button>
+            <a href="index.php">GET_HEADERS</a>
+        </form>
+    </main>
+</body>
+</html>

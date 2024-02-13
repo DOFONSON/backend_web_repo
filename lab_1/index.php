@@ -15,7 +15,7 @@
     </header>
     <main>
         <?php
-            echo 'Hello world'
+            echo 'Hello world';
         ?> 
     </main>
      <footer>
