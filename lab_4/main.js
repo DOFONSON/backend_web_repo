@@ -17,7 +17,7 @@ document.getElementById('clearBtn').addEventListener('click', () => {
 
 document.getElementById('calc').addEventListener('click', () => {
         const problem = input.value;
-        fetch('lab4.php', {
+        fetch('main.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -35,6 +35,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const urlParams = new URLSearchParams(window.location.search);
     const result = urlParams.get('result');
     if (result) {
-        document.getElementById('input').value = decodeURIComponent(result);
+        input.value = decodeURIComponent(result);
     }
 });
