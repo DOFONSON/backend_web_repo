@@ -1,0 +1,15 @@
+.calculator{
+    text-align: center;
+    margin: 100px auto;
+    background-color: darkslategrey;
+    max-width: 270px;
+    padding: 30px;
+}
+.numbers-input{
+    padding: 15px;
+    font-size: 20px;
+    margin-bottom: 40px;
+}
+.btn {
+    font-size: 30px;
+}
