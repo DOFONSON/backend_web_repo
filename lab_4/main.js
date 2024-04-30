@@ -7,7 +7,12 @@ function appendToDisplay(content) {
 let qwe = document.getElementsByClassName('btnBtn')
 for (const item of qwe) {
     item.addEventListener('click', () => {
-        input.value += item.textContent
+        if (item.textContent == 'cos' || item.textContent == 'sin' || item.textContent == 'tan') {
+            input.value += item.textContent;
+        }
+        else{
+            input.value += item.textContent;
+        }
     })
 }
 console.log(qwe);
