@@ -19,18 +19,22 @@ class ArticleController{
 
     public function show(int $id){
         $article = Article::getById($id);
-        $propertiesName = [];
-        $reflector = new ReflectionObject($article);
-        $properties = $reflector->getProperties();
-        foreach($properties as $property){
-            $propertiesName[] = $property->getName();
-        }
-        var_dump($propertiesName);
         if($article === []){
             $this->view->renderHtml('errors/error',[],404);
             return;
         }
-        // var_dump($article);
-        // $this->view->renderHtml('articles/show', ['article'=>$article]);
+        $this->view->renderHtml('articles/show', ['article'=>$article]);
+    }
+
+    public function create()
+    {
+        $this->view->renderHtml('articles/create');
+    }
+    public function store(){
+        $article = new Article;
+        $article->setTitle($_POST['title']);
+        $article->setText($_POST['text']);
+        $article->setAuthorId($_POST['authorId']);
+        $article->save();
     }
 }

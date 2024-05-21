@@ -5,7 +5,6 @@
     $connect = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
     if (mysqli_connect_errno()) echo mysqli_connect_error();
 
-    // if ($_GET['p'] == 'view' || $_GET['p'] == 'add' ||  $_GET['p'] == 'update' ||  $_GET['p'] == 'delete') require($_GET['p'].'.php');
     
     if (!isset($_GET['p'])) $_GET['p'] = 'view';
 
