@@ -1,14 +1,16 @@
 <?php
+    //Файл отвечает за роутинг, то есть за определение того, какой контроллер и какой метод нужно вызвать в зависимости от запроса, полученного от клиента.
+    //Мы делаем автозагрузку классов, чтобы PHP мог автоматически загружать классы, когда они используются в коде
     spl_autoload_register(function (string $className){
         require('../'.str_replace('\\', '/', $className).'.php');
     });
 
-    $pageFound = false;
-    $url = $_GET['route'] ?? "";
-    $routes = require('../src/routes.php');
+    $pageFound = false; // Найдена ли траница
+    $url = $_GET['route'] ?? ""; // Получаем данные (из массива GET ищем значение ключа route), иначе пустая строка
+    $routes = require('../src/routes.php'); //Загружает массив роутов из файла routes.php. Каждый роут представляет собой пару, где ключ - это регулярное выражение, соответствующее URL, а значение - это массив, содержащий имя контроллера и имя метода, который нужно вызвать.
     foreach($routes as $pattern => $controllerAndAction){
         preg_match($pattern, $url, $matches);
-        if (!empty($matches)){
+        if (!empty($matches)){ // Проверяет соответствует url регулярке роута и если да, то страница найдена, иначе сообзение, что страница не найдена
             $pageFound = true;
             unset($matches[0]);
             $controller = new $controllerAndAction[0];

@@ -1,4 +1,4 @@
-<?php require(__DIR__.'/../header.php'); ?>
+<?php require(__DIR__.'/../header.php'); // добавляем header?>
     <table class="table">
   <thead>
     <tr>
@@ -10,10 +10,10 @@
     </tr>
   </thead>
   <tbody>
-  <?php foreach($articles as $article):?>
+  <?php foreach($articles as $article): // Выводим article из массива articles с разметкой как снизу?>
     <tr>
       <th scope="row"><?=$article->getId();?></th>
-      <td><a href="<?=dirname($_SERVER['SCRIPT_NAME'])?>/article/<?=$article->getId();?>"><?=$article->getTitle();?></a></td>
+      <td><a href="<?=dirname(['SCRIPT_NAME'])?>/article/<?=$article->getId();?>"><?=$article->getTitle();?></a></td>
       <td><?=$article->getText();?></td>
       <td><?=$article->getAuthorId()->getNickname();?></td>
       <td><?=$article->getCreatedAt();?></td>
@@ -21,4 +21,4 @@
     <?php endforeach;?>
   </tbody>
 </table>
-<?php require(__DIR__.'/../footer.php'); ?>
+<?php require(__DIR__.'/../footer.php'); // добавляем footer?>
