@@ -8,7 +8,7 @@
     <label for="text">Text article</label>
     <textarea name="text" id="text" class="form-control"><?=$article->getText();?></textarea>
   </div>
-  <input type="hidden" name="authorId" value="<?=$article->getAuthorId()->getId();?>">
+  <input type="hidden" name="authorId" value="1" value="<?=$article->getAuthorId()-> getId();?>">
   <button type="submit" class="btn btn-primary">Update</button>
 </form>
 <?php require(__DIR__.'/../footer.php'); ?>

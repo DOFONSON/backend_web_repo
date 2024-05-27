@@ -1,97 +1,107 @@
 <?php
-namespace src\Models; // Создаём пронстранство имён
-use src\Services\Db; // Импортируем класс Db
+namespace src\Models;
+use src\Services\Db;
 
-abstract class ActiveRecordEntity{ // Создаём абстрактный класс ActiveRecordEntity, который будет родительский для всех моделей, использующих паттерн Active Record. Абстрактный класс не может быть инстанцирован напрямую и должен быть унаследован другими классами
-    protected $id; // Создаём защищённое св-во id, которое будет хранить уникальный идентификатор записи в базе данных
+abstract class ActiveRecordEntity{
+    protected $id;
 
-    public function __set($key, $value){ //Метод __set, который позволяет устанавливать значение свойству объекта, преобразуя имя свойства из snake_case в camelCase
-        $property = $this->formatToCamelcase($key); // Применяем приватный метод
+    public function __set($key, $value){
+        $property = $this->formatToCamelcase($key);
         $this->$property = $value;
     }
 
-    private function formatToCamelcase($key){ // Преобразует строку из snake_case в camelCase
+    private function formatToCamelcase($key){
         return lcfirst(str_replace('_', '', ucwords($key,'_')));
     }
-
-    private function formatToBd($key) { // Преобразует строку из camelCase в snake_case.
+    private function formatToDb($key){
         return strtolower(preg_replace('/([A-Z])/', '_$1', $key));
     }
     
-    public function getId() // Метод, который возвращает значение свойства id этого класса
+    public function getId()
     {
         return $this->id;
     }
-
-    public static function findAll(): ?array // Статический метод, который возвращает массив всех записей из таблицы, которые соответствуют данной модели
+    private function getPropertyToDb(): array
     {
-        $db = Db::getInstance(); // Получаем экземпляр класса Db
-        $sql = 'SELECT * FROM `'.static::getTableName().'`'; // Метод static::getTableName будет создан у каждого потомка этого класса для получения имени нужной нам таблицы
-        // var_dump($sql);
-        return $db->query($sql,[],static::class); // Далее возвращаем массив объектов, полученный в результате запроса к бд, используя метод query класса Db
+        $nameAndValue = [];
+        $reflector = new \ReflectionObject($this);
+        $properties = $reflector->getProperties();
+        foreach($properties as $property){
+            $nameCamelcase = $property->getName();
+            $nameToDb = $this->formatToDb($nameCamelcase);
+            $nameAndValue[$nameToDb] = $this->$nameCamelcase;
+        }
+        return $nameAndValue;
     }
 
-    public static function getById(int $id): ?self // Статический метод, который возвращает запись из бд по её id или, благодаря типизации и знаку вопросика null
+    public static function findAll(): ?array
     {
         $db = Db::getInstance();
-        $sql = 'SELECT * FROM `'.static::getTableName().'` WHERE `id`='.$id; // с помощью конкатенации создаём строку, которую подадим в бд
-        $result = $db->query($sql, [], static::class);
-        return $result ? $result[0] : null; // Возвращает первый элемент сформированного массива или null, если ничего не найдено.
+        $sql = 'SELECT * FROM `'.static::getTableName().'`';
+        // var_dump($sql);
+        return $db->query($sql,[],static::class);
+    }
+    
+    public static function findAllComments(int $articleId): ?array
+    {
+        $db = Db::getInstance();
+        $sql = 'SELECT * FROM comments WHERE article_id = ' . $articleId;
+        // var_dump($sql);
+        return $db->query($sql,[],static::class);
     }
 
-    public function save(){ // Метод, который сохраняет объект в бд
-        // var_dump($this->getPropertyToDB());
-        if ($this->getId()) $this->update(); // Если уже имеется такой id, выполняется обновление, иначе вставка новой записи.
+    public static function getById(int $id): ?self
+    {
+        $db = Db::getInstance();
+        $sql = 'SELECT * FROM `'.static::getTableName().'` WHERE `id`='.$id;
+        $result = $db->query($sql, [], static::class);
+        return $result ? $result[0] : null;
+    }
+    public function save(){
+        // var_dump($this->getPropertyToDb());
+        if ($this->getId()) $this->update();
         else $this->insert();
     }
-
-    private function insert() { // Создаём приватную функцию insert, которая записывает новую запись в бд
-        $db = Db::getInstance(); // Записываем в db инстанс класса
-        $nameField = []; // объявляем переменные с которыми будем работать
+    private function insert(){
+        $db = Db::getInstance();
+        $nameField = [];
         $params = [];
         $paramsToValue = [];
-        $fieldAndValue = array_filter($this->getPropertyToDB()); // Получаем массив свойств объекта для записи в БД
+        $fieldAndValue = array_filter($this->getPropertyToDb());
         // var_dump($fieldAndValue);
-        foreach ($fieldAndValue as $field => $value) { // Для каждого свойства производим итерацию
-            $nameField[] = '`'.$field.'`'; // Добавляем имя поля в массив
-            $param = ':'.$field; // Формируем параметр запроса
-            $params[] = $param; // Добавляем параметр в массив
-            $paramsToValue[$param] = $value; // Связываем параметр с его значением
+        foreach($fieldAndValue as $field=>$value){
+            $nameField[] = '`'.$field.'`';
+            $param = ':'.$field;
+            $params[] = $param;
+            $paramsToValue[$param] = $value;
         }
         $sql = 'INSERT INTO `'.static::getTableName().'`
-                ('.implode(',', $nameField).') 
-                VALUES ('.implode(',', $params).')'; // Пишем sql запрос с помощью конкатенации
+                ('.implode(',',$nameField).') 
+                VALUES ('.implode(',',$params).')';
         // var_dump($sql);
-        $db->query($sql, $paramsToValue, static::class); // Обращаемся к бд
+        $db->query($sql, $paramsToValue, static::class);
     }
-
-    private function update() {
-        $db = Db::getInstance(); // Получаем экземпляр класса Db
-        $data = $this->getPropertyToDB(); // Получаем массив свойств объекта для записи в БД
-        $params = []; // Объявляем переменные
+    private function update(){
+        $db = Db::getInstance();
+        $data = $this->getPropertyToDb();
+        $params = [];
         $paramsAndValue = [];
-        foreach ($data as $property => $value) { // Для каждого поля производим итерацию
+        foreach($data as $property=>$value){
             $param = ':'.$property;
-            $params[] = '`'.$property.'`='.$param;
-            $paramsAndValue[$param] = $value; // Формируем итоговое поле
+            $params [] = '`'.$property.'`='.$param; 
+            $paramsAndValue[$param] = $value;
         }
-        $sql = 'UPDATE `'.static::getTableName().'`
-                SET '.implode(',', $params).' WHERE `id`=:id'; // Формируем запрос
-        $db->query($sql, $paramsAndValue, static::class); // обращаемся к бд
+        $sql = 'UPDATE `'.static::getTableName().'` 
+               SET '.implode(',', $params).' WHERE `id`=:id';
+        $db->query($sql, $paramsAndValue, static::class);
+        // var_dump($sql);
+    }
+    public function delete(){
+        $db = Db::getInstance();
+        $sql = 'DELETE FROM `'.static::getTableName().'` WHERE `id`=:id';
+        $db->query($sql, [':id'=>$this->id], static::class);
     }
 
-    private function getPropertyToDB():array{ // Возвращает массив имён и значений свойств объекта, преобразованных в snake_case для использования в базе данных.
-        $nameAndValue = []; // Создаём пустой массив
-        $reflector = new \ReflectionObject($this); // Создаётся объект класса \ReflectionObject, который предоставляет возможность манипулировать текущим экземпляром класса с помощью механизмов рефлексии
-        $properties = $reflector->getProperties(); // Возвращает массив объектов ReflectionProperty, каждый из которых представляет свойство текущего объекта
-        foreach($properties as $property){ // Для каждого из свойств:
-            $nameCamelCase = $property->getName(); // Возвращаем имя свойства
-            $nameToDb = $this->formatToBd($nameCamelCase);  // Переводим в snake_case
-            $nameAndValue[$nameToDb] = $this->$nameCamelCase; // Значение свойства объекта $this->$nameCamelCase присваивается соответствующему ключу в массиве $nameAndValue.
-        }
 
-        return $nameAndValue; // Возвращаем массив
-    }
-
-    abstract protected static function getTableName(); // Создаём функцию getTableName, которая будет у каждого инстанса
+    abstract protected static function getTableName();
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace src\Models\Users; // Создаём новое пронстранство имён
+namespace src\Models\Users;
 
-use src\Models\ActiveRecordEntity; // Импортируем класс  ActiveRecordEntity
+use src\Models\ActiveRecordEntity;
 
-class User extends ActiveRecordEntity{ // Создаём класс пользователя, который наследуется от класса ActiveRecordEntity
+class User extends ActiveRecordEntity{
 
-    protected $nickname; // Перечисляем защищённые свойства
+    protected $nickname;
     protected $email;
     protected $isConfirmed;
     protected $role;
@@ -14,14 +14,14 @@ class User extends ActiveRecordEntity{ // Создаём класс пользо
     protected $authToken;
     protected $createdAt;
 
-    public function getNickname(){ // Функции для получения данных у пользователя
+    public function getNickname(){
         return $this->nickname;
     }
     public function getEmail(){
         return $this->email;
     }
     
-    protected static function getTableName(){ // Защищённое свойство для получения имени таблицы для работы с бд
+    protected static function getTableName(){
         return 'users';
     }
 }

@@ -28,20 +28,20 @@ use src\Models\Users\User;
             return $this->createdAt;
         }
 
-        public function setTitle(string $title){
+        public function setTitle(string $title){ // Записывает в поле для названия параметр, который подаётся на вход
             $this->title = $title;
         }
 
-        public function setText(string $text){
+        public function setText(string $text){ // Записывает в поле для текста параметр, который подаётся на вход
             $this->text = $text;
         }
 
-        public function setAuthorId(int $authorId){
+        public function setAuthorId(int $authorId){ // Записывает в поле для id автора параметр, который подаётся на вход
             $this->authorId = $authorId;
         }
 
 
-        protected static function getTableName(){
+        protected static function getTableName(){ // Возвращает имя таблицы с которой идёт работа
             return 'articles';
         }
 
