@@ -16,12 +16,13 @@
         <h3>Comments</h3>
 
         <?php foreach($comments as $comment):?>
-            <div data-id="<?=$comment->getId();?>" style="border: solid 1px black; padding: 5px 7px; border-radius: 10px; margin-bottom: 10px;">
-                <p>Author <span><?=$comment->getAuthorId()->getNickname();?></span></p>
-                <p><?=$comment->getText();?></p>
-                <a href="<?=dirname($_SERVER['SCRIPT_NAME'])?>/comment/delete/<?=$comment->getId();?>" class="btn btn-danger">Delete comment</a>
-            </div>
-         <?php endforeach;?>
+    <div data-id="<?=$comment->getId();?>" style="border: solid 1px black; padding: 5px 7px; border-radius: 10px; margin-bottom: 10px;">
+        <p>Author <span><?=$comment->getAuthorId()->getNickname();?></span></p>
+        <p><?=$comment->getText();?></p>
+        <a href="<?=dirname($_SERVER['SCRIPT_NAME'])?>/comment/edit/<?=$comment->getId();?>" class="btn btn-primary">Edit comment</a>
+        <a href="<?=dirname($_SERVER['SCRIPT_NAME'])?>/comment/delete/<?=$comment->getId();?>" class="btn btn-danger">Delete comment</a>
+    </div>
+ <?php endforeach;?>
 
     </div>
 </div>

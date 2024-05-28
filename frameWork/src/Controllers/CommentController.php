@@ -27,5 +27,15 @@ class CommentController{
         header('Location:framework/www/articles');
     }
 
+    public function update(int $id){
+        $comment = Comment::getById($id);
+        $comment->setText($_POST['text']);
+        $comment->save();
+        header('Location:framework/www/articles');
+    }
 
+    public function edit(int $id){
+        $comment = Comment::getById($id);
+        $this->view->renderHtml('comment/edit', ['comment' => $comment]);
+    }
 }

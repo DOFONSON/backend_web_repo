@@ -10,5 +10,7 @@
         '~article/update/(\d+)~'=>[src\Controllers\ArticleController::class, 'update'],
         '~article/delete/(\d+)~'=>[src\Controllers\ArticleController::class, 'delete'],
         '~article/comment/(\d+)~'=>[src\Controllers\CommentController::class, 'store'],
-        '~comment/delete/(\d+)~'=>[src\Controllers\CommentController::class, 'delete']
+        '~comment/delete/(\d+)~'=>[src\Controllers\CommentController::class, 'delete'],
+        '~comment/update/(\d+)~'=>[src\Controllers\CommentController::class, 'update'],
+        '~comment/edit/(\d+)~'=>[src\Controllers\CommentController::class, 'edit']
     ];
